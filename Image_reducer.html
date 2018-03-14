@@ -1,0 +1,162 @@
+<html>
+	<head>
+		<style>
+
+		</style>
+	</head>
+	<body>
+		<div id="main">
+			<input type="file" onchange="previewFile()"><br>
+			<p id="imageSize">Image Size: </p>
+			<img src="" height="200"  alt="Image preview...">
+		</div>
+		<div id="result">
+		</div>
+
+		<script>
+
+			//upload photo
+		 	function previewFile(){
+
+		 		//selects the query named img
+	   		var preview = document.querySelector('img'); 
+
+	   		//sames as here
+	   		var file = document.querySelector('input[type=file]').files[0]; 
+	   		
+	   		var reader  = new FileReader();
+
+	   		reader.onloadend = function () {
+
+       		preview.src = reader.result;
+   			};
+
+		   if (file) {
+
+		   		 //reads the data as a URL
+		       reader.readAsDataURL(file);
+
+		       	//get/set image size
+	   				var divImageSize = document.getElementById('imageSize');
+
+	   				divImageSize.innerHTML += (file.size/1000)+"KB";
+
+	   				CreateSecondInputs()
+
+		   } else {
+		       preview.src = "";
+		   };
+		   //get second inputs after photo upload
+	  		function CreateSecondInputs() {
+
+	  			//create div to place new info
+	  			var div = document.createElement('div');
+	  			div.id = 'reduceDiv';
+
+	  			//Add div to main div
+	  			document.getElementById('main').appendChild(div);
+
+	  			//create paragraph tag
+	  			var p = document.createElement("p");
+	  			var text = document.createTextNode("Percent Reduce Image:");
+	  			p.appendChild(text);
+	  			document.getElementById('reduceDiv').appendChild(p);
+
+	  			//create input field to get percent dcrease value
+					
+	  			var input = document.createElement("input");
+					input.setAttribute('type', 'number');
+					input.setAttribute('value', '50');
+					input.setAttribute('max', '99');
+					input.setAttribute('min', '1');
+					document.getElementById('reduceDiv').appendChild(input);
+					
+
+					//craete button
+					var btn = document.createElement("Button");
+					btn.id="submit";
+					var t = document.createTextNode("Convert Image");
+					btn.appendChild(t);
+					btn.onclick = imageConvertor;
+					document.getElementById('reduceDiv').appendChild(btn);
+	  		}
+
+	  		//convert Image
+	  		function imageConvertor() {
+
+	  			//create new image instance
+					var image = new Image();
+	  			var reader  = new FileReader();
+
+	  			//set up image
+		   		reader.onloadend = function () {
+
+	   				image.src = reader.result;
+	       		image.onload = function() {
+						
+							//**SET IMAGE VIEW**
+							//call function which creates a canvas and copies the pictures in canvas with params of (image, heigh, width)
+	  					img.src = imageToDataUri(this, 640, 355);
+
+	  					var imageDataURL = imageToDataUri(this, 640, 355);
+
+
+	  					var base64String = imageDataURL.split(",")[1];
+
+	  					var newFileSize = Math.round(base64String.length * 3 / 4);
+
+	  					//**SET SIZE OF IMAGE
+	  					var text = document.createTextNode("New Image Size after converting to base64: " + (newFileSize/1000)+"KB");
+	  					p.appendChild(text);
+						}
+	   			};
+
+	   			//reads the data as a URL
+		       reader.readAsDataURL(file);
+
+	  			//create div to place new info
+	  			var div = document.createElement('div');
+	  			div.id = 'viewDiv';
+
+	  			//Add div to main div
+	  			document.getElementById('result').appendChild(div);
+
+	  			//set new image size
+	  			//image info text describing the new size
+	  			var p = document.createElement("p");
+	  			
+	  			document.getElementById('viewDiv').appendChild(p);
+
+	  			//Display converted Image;
+	  			var img = document.createElement("img");
+	  			img.id = "newImage";
+	  			// img.height = 200;
+	  			img.alt="Image preview!!"
+	  			img.style.padding="10px";
+	  			
+	  			document.getElementById('viewDiv').appendChild(img);
+
+	  		}//END Imageconvertor function
+
+  			imageToDataUri = function(img, width, height) {
+			
+					// create an off-screen canvas
+					var canvas = document.createElement('canvas'),
+						ctx = canvas.getContext('2d');
+
+					// set its dimension to target size
+					canvas.width = width;
+					canvas.height = height;
+
+					// draw source image into the off-screen canvas:
+					ctx.drawImage(img, 0, 0, width, height);
+
+					// encode image to data-uri with base64 version of compressed image
+
+					return canvas.toDataURL();
+				}//END imageToDataUri function
+  		};
+		</script>
+	</body>
+
+</html>
