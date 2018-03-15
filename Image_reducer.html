@@ -13,10 +13,12 @@ Discription: This project gets an input of an image, allows user to pick resize 
 		<div id="main">
 			<h1> Base64 Image Convorter & Size Reducer</h1>
 			<input type="file" onchange="previewFile()"><br>
-			<p id="imageSize">Image Size: </p>
-			<p id="imageHeight">Image Height: </p>
-			<p id="imageWidth">Image Width: </p>
-			<img src="" height="200"  alt="Image preview...">
+			<div id="page">
+				<p id="imageSize">Image Size: </p>
+				<p id="imageHeight">Image Height: </p>
+				<p id="imageWidth">Image Width: </p>
+				<img src="" height="200"  alt="Image preview...">
+			</div>
 		</div>
 		<div id="result">
 		</div>
@@ -26,6 +28,12 @@ Discription: This project gets an input of an image, allows user to pick resize 
 			//upload photo
 		 	function previewFile(){
 
+		 		//clear page
+		 		if(document.getElementById('viewDiv')){
+	 				document.getElementById('viewDiv').innerHTML = "";
+	 				document.getElementById('reduceDiv').innerHTML = "";
+		 		}
+		 	
 		 		var imageHeight;
 		 		var imageWidth;
 
@@ -137,7 +145,7 @@ Discription: This project gets an input of an image, allows user to pick resize 
 	       		image.onload = function() {
 						
 							//**SET IMAGE VIEW**
-							//call function which creates a canvas and copies the pictures in canvas with params of (image, heigh, width) and display image after conversion
+							//call function which creates a canvas and copies the pictures in canvas with params of (image, heigh, width) and display image after conversion  
 	  					img.src = imageToDataUri(this, newWidth, newHeight );
 
 	  					//get the calculated conversion to get the file size
@@ -150,11 +158,11 @@ Discription: This project gets an input of an image, allows user to pick resize 
 	  					var newFileSize = Math.round(base64String.length * 3 / 4);
 
 	  					//**SET SIZE OF IMAGE
-	  					var text = document.createTextNode("New Image Size after converting to base64: " + (newFileSize/1000)+"KB, ");
+	  					var text = document.createTextNode("New Image Size after converting to base64: " + (newFileSize/1000)+"KB, \n");
 	  					p.appendChild(text);
 
 	  					//get/set image height
-		   				var divNewImageHeight = document.createTextNode("New Image Height: " + newHeight + " PX, ")
+		   				var divNewImageHeight = document.createTextNode("New Image Height: " + newHeight + " PX, \n")
 		   				p.appendChild(divNewImageHeight)
 
 		   				//get/set image width
