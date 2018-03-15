@@ -1,13 +1,21 @@
+<!-- Author: Nino Yaghoubi
+GitHub: https://github.com/ninoyaghoubi
+Date: 3/15/2018
+Discription: This project gets an input of an image, allows user to pick resize percent, and then converts the image to base64 with the reduced percentage. It also gives image data showing the image size vs the new image size; 
+ -->
 <html>
 	<head>
 		<style>
 
 		</style>
 	</head>
-	<body>
+	<body style="margin-left: 100px; margin-top:50px"> 
 		<div id="main">
+			<h1> Base64 Image Convorter & Size Reducer</h1>
 			<input type="file" onchange="previewFile()"><br>
 			<p id="imageSize">Image Size: </p>
+			<p id="imageHeight">Image Height: </p>
+			<p id="imageWidth">Image Width: </p>
 			<img src="" height="200"  alt="Image preview...">
 		</div>
 		<div id="result">
@@ -17,6 +25,9 @@
 
 			//upload photo
 		 	function previewFile(){
+
+		 		var imageHeight;
+		 		var imageWidth;
 
 		 		//selects the query named img
 	   		var preview = document.querySelector('img'); 
@@ -29,6 +40,21 @@
 	   		reader.onloadend = function () {
 
        		preview.src = reader.result;
+
+       		//create new image object to get the image height and width
+       		var image = new Image();
+       		image.src = reader.result;
+       		image.onload = function() {
+     				//get/set image height
+	   				var divImageHeight = document.getElementById('imageHeight');
+	   				divImageHeight.innerHTML += this.height+" PX";
+	   				imageHeight = this.height;
+
+	   				//get/set image width
+	   				var divImageWidth = document.getElementById('imageWidth');
+	   				divImageWidth.innerHTML += this.width+" PX";
+	   				imageWidth = this.width;
+     			}
    			};
 
 		   if (file) {
@@ -38,7 +64,6 @@
 
 		       	//get/set image size
 	   				var divImageSize = document.getElementById('imageSize');
-
 	   				divImageSize.innerHTML += (file.size/1000)+"KB";
 
 	   				CreateSecondInputs()
@@ -58,13 +83,13 @@
 
 	  			//create paragraph tag
 	  			var p = document.createElement("p");
-	  			var text = document.createTextNode("Percent Reduce Image:");
+	  			var text = document.createTextNode("How Big Would You Like Your Next Image To Be? in(%)");
 	  			p.appendChild(text);
 	  			document.getElementById('reduceDiv').appendChild(p);
 
 	  			//create input field to get percent dcrease value
-					
 	  			var input = document.createElement("input");
+	  			input.id = "inputPercent";
 					input.setAttribute('type', 'number');
 					input.setAttribute('value', '50');
 					input.setAttribute('max', '99');
@@ -75,7 +100,7 @@
 					//craete button
 					var btn = document.createElement("Button");
 					btn.id="submit";
-					var t = document.createTextNode("Convert Image");
+					var t = document.createTextNode("Convert Image to base64");
 					btn.appendChild(t);
 					btn.onclick = imageConvertor;
 					document.getElementById('reduceDiv').appendChild(btn);
@@ -84,6 +109,23 @@
 	  		//convert Image
 	  		function imageConvertor() {
 
+	  			//get image height x width
+	  			//get the inputed percentage to change image size too
+	  			var percent = document.getElementById("inputPercent").value;
+
+	  			//DATA
+	  			var newHeight;
+  				var newWidth;
+
+	  			//calculate the new height and width
+  				newHeight = (imageHeight * percent) / 100;
+  				newWidth = (imageWidth * percent) / 100;
+
+	  			//clear div for new input
+	  			if(document.getElementById('viewDiv')){
+						document.getElementById('viewDiv').innerHTML = "";
+	  			};
+	 		
 	  			//create new image instance
 					var image = new Image();
 	  			var reader  = new FileReader();
@@ -95,19 +137,29 @@
 	       		image.onload = function() {
 						
 							//**SET IMAGE VIEW**
-							//call function which creates a canvas and copies the pictures in canvas with params of (image, heigh, width)
-	  					img.src = imageToDataUri(this, 640, 355);
+							//call function which creates a canvas and copies the pictures in canvas with params of (image, heigh, width) and display image after conversion
+	  					img.src = imageToDataUri(this, newWidth, newHeight );
 
-	  					var imageDataURL = imageToDataUri(this, 640, 355);
+	  					//get the calculated conversion to get the file size
+	  					var imageDataURL = imageToDataUri(this, newWidth, newHeight);
 
-
+	  					//split string to only view base64 strings
 	  					var base64String = imageDataURL.split(",")[1];
 
+	  					//caclulate base64 to file size KB
 	  					var newFileSize = Math.round(base64String.length * 3 / 4);
 
 	  					//**SET SIZE OF IMAGE
-	  					var text = document.createTextNode("New Image Size after converting to base64: " + (newFileSize/1000)+"KB");
+	  					var text = document.createTextNode("New Image Size after converting to base64: " + (newFileSize/1000)+"KB, ");
 	  					p.appendChild(text);
+
+	  					//get/set image height
+		   				var divNewImageHeight = document.createTextNode("New Image Height: " + newHeight + " PX, ")
+		   				p.appendChild(divNewImageHeight)
+
+		   				//get/set image width
+		   				var divNewImageWidth = document.createTextNode("New Image Width: " + newWidth + " PX ")
+		   				p.appendChild(divNewImageWidth)
 						}
 	   			};
 
@@ -130,7 +182,7 @@
 	  			//Display converted Image;
 	  			var img = document.createElement("img");
 	  			img.id = "newImage";
-	  			// img.height = 200;
+	  			img.height = 200;
 	  			img.alt="Image preview!!"
 	  			img.style.padding="10px";
 	  			
@@ -138,6 +190,7 @@
 
 	  		}//END Imageconvertor function
 
+	  		//use canvas to reduce the image size
   			imageToDataUri = function(img, width, height) {
 			
 					// create an off-screen canvas
