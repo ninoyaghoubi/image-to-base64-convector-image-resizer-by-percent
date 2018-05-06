@@ -21,8 +21,9 @@ Discription: This project gets an input of an image, allows user to pick resize 
 			</div>
 		</div>
 		<div id="result">
+		
 		</div>
-
+			<p id="base64" style="word-wrap:break-word;"> Base64: </p>
 		<script>
 
 			//upload photo
@@ -32,6 +33,11 @@ Discription: This project gets an input of an image, allows user to pick resize 
 		 		if(document.getElementById('viewDiv')){
 	 				document.getElementById('viewDiv').innerHTML = "";
 	 				document.getElementById('reduceDiv').innerHTML = "";
+	 				document.getElementById('imageSize').innerHTML = "Image Size:";
+	 				document.getElementById('imageHeight').innerHTML = "Image Height:";
+	 				document.getElementById('imageWidth').innerHTML = "Image Width:";
+	 				document.getElementById('base64').innerHTML = "Base64: ";
+
 		 		}
 		 	
 		 		var imageHeight;
@@ -151,8 +157,14 @@ Discription: This project gets an input of an image, allows user to pick resize 
 	  					//get the calculated conversion to get the file size
 	  					var imageDataURL = imageToDataUri(this, newWidth, newHeight);
 
+							//get/set base64 string
+		   				var base64 = document.getElementById('base64');
+		   				base64.innerHTML += imageDataURL;
+
 	  					//split string to only view base64 strings
 	  					var base64String = imageDataURL.split(",")[1];
+
+	  					
 
 	  					//caclulate base64 to file size KB
 	  					var newFileSize = Math.round(base64String.length * 3 / 4);
